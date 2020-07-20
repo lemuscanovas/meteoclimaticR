@@ -76,5 +76,6 @@ ppcc_met <- meteoclimatic_download(id_prov = id_ppcc)
 Y ahora visualizamos:
 
 ``` r
-plot_met(ppcc_met, var = "Hum.act",units = "HR (%)")
+plot_met(ppcc_met,var =  "Hum.min", title = "Humedad Relativa mínima 20-07-2020",
+         caption = "Meteoclimatic",units = "HR (%)",pal = rev(pals::jet(100)))
 ```
