@@ -1,61 +1,21 @@
-synoptReg <img src="img/logo.png" align="right" alt="" width="140" />
+meteoclimaticR <img src="img/logo.png" align="right" alt="" width="140" />
 =========================================================
-# `synoptReg`: Synoptic Climate Classification and Spatial Regionalization of Environmental Data
+# `meteoclimaticR`: Descarga de datos de Meteoclimatic (https://www.meteoclimatic.net/)
 
+## Descripción
 
-[![CRAN status](https://www.r-pkg.org/badges/version/synoptReg)](https://cran.r-project.org/package=synoptReg)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/synoptReg)](http://cran.rstudio.com/web/packages/synoptReg/index.html)
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+**meteoclimaticR** permite la descarga de datos meteorológicos proporcionados por la red de Meteoclimatic. Se pueden obtener los datos actuales de temperatura, humedad relativa, precipitación, viento y presión atmosférica. Además también se pueden descargar los valores máximos y mínimos del mismo día. Como nota negativa, no se pueden bajar datos históricos, solamente los del presente día. 
 
-## Overview
+## ¿Cómo funciona?
 
-**synoptReg** is an open source package for computing synoptic climate classifications and spatial regionalizations of environmental data. Package website: lemuscanovas.github.io/synoptreg/
-
-----
-
-Contents:
-
-* [Why this package](#why-this-package)
-* [How it works](#how-it-works)
-  * [Installation](#installation)
-  * [Vignettes](#vignettes)
-* [Package citation](#package-citation)
-* [Contact](#contact)
-
-----
-
-## Why this package
-The interaction between the troposphere and the environment is well known, and how this can condition human activities on some occasions. These situations can occur with an anticyclonic block that causes an increase in the concentration of NO<sub>2</sub>; or when a low-pressure area causes abundant rainfall over urban areas, etc.
-This package is intended to be a roadmap for territorial management on a regional scale and to anticipate the management of adverse situations for the population, due to pollution, as well as extreme weather conditions.
-In short, `synoptReg` allows to:
-
--    Compute an objective **synoptic classification** to obtain the main atmospheric patterns, the so-called weather types, of a given region. Two approaches are provided:
-
-     - ***Circulation-To-Environment***: First establishes the main circulation         types for a long time series and then characterises an environmental
-     variable (i.e. precipitation,NO<sub>2</sub>,O<sub>3</sub>,...) based on
-     the previous circulation types.
-  
-     - ***Environment-To-Circulation***: First categorises the environmental
-     variable (e.g. precipitation, temperature,...) and then characterises
-     the synoptic patterns prevailing under specific environmental
-     conditions (e.g. days with elevated temperatures, torrential rainfall
-     events). 
-  
-- Represent the **impact of each weather type** on an environmental variable (continuous): precipitation, temperature, pollutants, ...
-
-- Define a **categorical regionalization** of this environmental variable. Each region will be independent and with specific characteristics.  
-
-## How it works
-
-### Installation
+### Instalación
 
 ``` r
-# To install the CRAN version (1.0.1):
-install.packages("synoptReg")
-
-# To install the latest version from Github:
+# Descarga desde github (0.0.1):
 # install.packages("remotes")
-remotes::install_github("lemuscanovas/synoptReg")
+remotes::install_github("lemuscanovas/meteoclimaticR")
 ```
+
+### ejemplo 1
+
+Para la descarga de datos de la **província de Barcelona**, es necesario escribir el **identificador** (`id_prov`) común para todas las estaciones de esta región. Este `id_prov` lo podemos obtener consultando cualquier estación de la provincia, por ejemplo Barcelona - Tibidabo (**ESCAT080000000**8023C). El texto en negrita hace referencia al identificador común de la provincia de Barcelona. **El identificador termina cuando aparece la primera cifra distinta a 0**
