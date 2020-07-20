@@ -56,6 +56,7 @@ A partir de estos datos y usando `ggplot2` es muy sencillo realizar un a visuali
 ``` r
 plot_met(bcn_met, title = "Temperatura máxima 20/07/2020", caption = "Meteoclimatic")
 ```
+<img src="img/bcn_tx.png" align="centre" alt="" width="500" />
 Dentro de plot_met se puede cambiar de paleta, tamaño de los puntos, etc... 
 
 ### Ejemplo 2: un conjunto de provincias
@@ -79,3 +80,5 @@ Y ahora visualizamos:
 plot_met(ppcc_met,var =  "Hum.min", title = "Humedad Relativa mínima 20-07-2020",
          caption = "Meteoclimatic",units = "HR (%)",pal = rev(pals::jet(100)))
 ```
+<img src="img/ppcc_hr.png" align="centre" alt="" width="500" />
+
