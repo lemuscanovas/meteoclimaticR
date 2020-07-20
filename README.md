@@ -23,10 +23,10 @@ Para la descarga de datos de la **província de Barcelona**, usaremos la funció
 
 ``` r
 # Cargamos las librerías necesarias para el funcionamiento de la función:
+if(!require("raster")) install.packages("raster")
 if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("httr")) install.packages("httr")
 if(!require("XML")) install.packages("XML")
-if(!require("raster")) install.packages("raster")
 if(!require("sf")) install.packages("sf")
 
 
