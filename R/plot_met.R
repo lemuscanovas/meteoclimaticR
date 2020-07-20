@@ -52,7 +52,7 @@ plot_met <- function(data, var = "Temp.max", pal = pals::jet(100),
     scale_x_continuous(limits = c(min(data$lon)-0.1,c(max(data$lon))+0.1),expand = c(0,0))+
     scale_y_continuous(limits = c(min(data$lat)-0.1,c(max(data$lat))+0.1),expand = c(0,0))+
     theme_bw() +
-    labs(title = title, caption = )+
+    labs(title = title, caption = caption)+
     theme(axis.title = element_blank(),
           legend.position = "bottom")+
     guides(fill = guide_colorbar(title = "ºC",
