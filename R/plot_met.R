@@ -55,7 +55,7 @@ plot_met <- function(data, var = "Temp.max", pal = pals::jet(100),
     labs(title = title, caption = caption)+
     theme(axis.title = element_blank(),
           legend.position = "bottom")+
-    guides(fill = guide_colorbar(title = "ºC",
+    guides(fill = guide_colorbar(title = units,
                                  label.position = "bottom",
                                  title.position = "left", title.vjust = 1,
                                  # draw border around the legend
