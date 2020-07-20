@@ -16,7 +16,7 @@ meteoclimaticR <img src="img/logo.png" align="right" alt="" width="140" />
 remotes::install_github("lemuscanovas/meteoclimaticR")
 ```
 
-### ejemplo 1
+### ejemplo 1: una sola provincia
 
 Para la descarga de datos de la **província de Barcelona**, usaremos la función `meteoclimatic_download`.  Para su funcionamiento es necesario escribir el **identificador** (`id_prov`) común para todas las estaciones de esta provincia. Este `id_prov` lo podemos obtener consultando cualquier estación de la provincia, por ejemplo Barcelona - Tibidabo (**ESCAT080000000**8023C). El texto en negrita hace referencia al identificador común de la provincia de Barcelona. **El identificador termina cuando aparece la primera cifra distinta a 0**
 
@@ -50,4 +50,8 @@ bcn_met <- meteoclimatic_download(id_prov = "ESCAT080000000")
 # 10 Bada~ ESCA~    20 Jul    2020 18:0~  41.4  2.22 C             28.8     29.9     22.7 %             61      79      47 hPa          1016.    1017.
 # # ... with 171 more rows, and 7 more variables: Pres.min <dbl>, Vient.unit <chr>, Vient.act <dbl>, Vient.dir <dbl>, Vient.max <dbl>, Precip.unit <chr>,
 # #   Precip.total <dbl>
+```
+A partir de estos datos y usando `ggplot2` es muy sencillo realizar un a visualización espacial de la variable de interés. Sin embargo, se ofrece la posibilidad de un mapeo automático con la función `plot_met`, la cual permite realizar la visualización de cualquiera de las varaibles mostradas en el objeto `bcn_met`. En esta ocasión vamos a plotear la temperatura máxima.
+``` r
+plot_met(bcn_met)
 ```
