@@ -28,6 +28,7 @@ if(!require("tidyverse")) install.packages("tidyverse")
 if(!require("httr")) install.packages("httr")
 if(!require("XML")) install.packages("XML")
 if(!require("sf")) install.packages("sf")
+if(!require("pals")) install.packages("pals")
 
 library(meteoclimaticR)
 
@@ -57,38 +58,23 @@ plot_met(bcn_met)
 ```
 Dentro de plot_met se puede cambiar de paleta, tamaño de los puntos, etc... 
 
-### Ejemplo 2: todas las provincias y Portugal
+### Ejemplo 2: un conjunto de provincias
 
-Para descargar todas las provincias y las estaciones de Portugal, simplemente hay que crear un vector con todos los identificadores:
+Para descargar varias provincias a la vez, simplemente hay que crear un vector con todos los identificadores deseados:
 ``` r
-id_prov <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # cat
+id_ppcc <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # cat
              "ESPVA12000000","ESPVA46000000","ESPVA030000000", #val
-             "ESMUR30000000", # mur
-             "ESAND040000000","ESAND18000000","ESAND23000000","ESAND14000000","ESAND29000000",
-             "ESAND41000000","ESAND1100000011600A","ESAND21000000", # and
-             "PTSUR080000000","PTSUR120000000","PTCEN110000000","PTCEN070000000",
-             "PTCEN200000000","PTCEN100000000","PTNOR040000000","PTNOR180000000", # pt
-             "ESEXT060000000","ESEXT10000000", #ext
-             "ESCLM45000000","ESCLM13000000","ESCLM16000000","ESCLM020000000",
-             "ESCLM19000000", #cylam
-             "ESMAD28000000", #mad
-             "ESCYL0500000005","ESCYL40000000","ESCYL42000000","ESCYL42000000",
-             "ESCYL34000000","ESCYL24000000","ESCYL49000000","ESCYL47000000",
-             "ESCYL37000000","ESCYL49000000", #cyleo
-             "ESGAL320000000","ESGAL36000000","ESGAL15000000","ESGAL27000000", # gal
-             "ESAST33000000", #astu
-             "ESCTB39000000" ,#cant
-             "ESEUS48000000","ESEUS20000000","ESEUS010000000", #eusk
-             "ESNAF31000000", #nav,
-             "ESLRI26000000", #rioj
-             "ESARA22000000","ESARA50000000","ESARA44000000", #arag
-             "ESIBA0700000","ESAND52000000")#"ESICA3800000") # bal, melilla y canarias
+             "ESIBA0700000") #bal
 ```
 Ahora simplemente se trata de usar la función `meteoclimatic_download` como en el ejemplo anterior. Note que la descarga puede demorar medio minuto.
 
 ``` r
 # Descarga de los datos de temperatura máxima de la Provincia de Barcelona
-bcn_met <- meteoclimatic_download(id_prov = "id_prov")
+ppcc_met <- meteoclimatic_download(id_prov = "id_ppcc")
 
+```
+Y ahora visualizamos:
 
+``` r
+plot_met(ppcc_met)
 ```
