@@ -29,6 +29,8 @@ if(!require("httr")) install.packages("httr")
 if(!require("XML")) install.packages("XML")
 if(!require("sf")) install.packages("sf")
 
+library(meteoclimaticR)
+
 
 # Descarga de los datos de temperatura máxima de la Provincia de Barcelona
 bcn_met <- meteoclimatic_download(id_prov = "ESCAT080000000")
