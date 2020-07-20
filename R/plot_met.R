@@ -41,7 +41,7 @@ plot_met <- function(data, var = "Temp.max", pal = pals::jet(100),
 
   ggplot()+
     geom_raster(data = elev, aes(lon,lat, fill = Z), interpolate = T,show.legend = F, alpha = 0.8)+
-    scale_fill_gradientn(colors = grey.colors(100),na.value = "transparent")+
+    scale_fill_gradientn(colors = rev(grey.colors(100)),na.value = "transparent")+
     ggnewscale::new_scale_fill() +
     geom_sf(data = borders_esp, fill = "transparent")+
     geom_sf(data = borders_pt, fill = "transparent")+
