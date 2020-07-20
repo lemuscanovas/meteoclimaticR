@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595267354646.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3920630657",
+    "id" : "419F4E41",
+    "lastKnownWriteTime" : 1595267353,
+    "last_content_update" : 1595267353,
+    "path" : "C:/Users/gc/Desktop/meteoclimaticR/R/hello.R",
+    "project_path" : "R/hello.R",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
