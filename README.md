@@ -54,7 +54,7 @@ bcn_met <- meteoclimatic_download(id_prov = "ESCAT080000000")
 ```
 A partir de estos datos y usando `ggplot2` es muy sencillo realizar un a visualización espacial de la variable de interés. Sin embargo, se ofrece la posibilidad de un mapeo automático con la función `plot_met`, la cual permite realizar la visualización de cualquiera de las varaibles mostradas en el objeto `bcn_met`. En esta ocasión vamos a plotear la temperatura máxima.
 ``` r
-plot_met(bcn_met)
+plot_met(bcn_met, title = "Temperatura máxima 20/07/2020", caption = "Meteoclimatic")
 ```
 Dentro de plot_met se puede cambiar de paleta, tamaño de los puntos, etc... 
 
@@ -70,11 +70,11 @@ Ahora simplemente se trata de usar la función `meteoclimatic_download` como en 
 
 ``` r
 # Descarga de los datos de temperatura máxima de la Provincia de Barcelona
-ppcc_met <- meteoclimatic_download(id_prov = "id_ppcc")
+ppcc_met <- meteoclimatic_download(id_prov = id_ppcc)
 
 ```
 Y ahora visualizamos:
 
 ``` r
-plot_met(ppcc_met)
+plot_met(ppcc_met, var = "Hum.act",units = "HR (%)")
 ```
