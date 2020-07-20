@@ -35,7 +35,7 @@ library(meteoclimaticR)
 
 # Descarga de los datos de temperatura máxima de la Provincia de Barcelona
 bcn_met <- meteoclimatic_download(id_prov = "ESCAT080000000")
-
+bcn_met
 # # A tibble: 181 x 26
 #    name  id      num mes     año hora    lat   lon Temp.unit Temp.act Temp.max Temp.min Hum.unit Hum.act Hum.max Hum.min Pres.unit Pres.act Pres.max
 #    <chr> <chr> <dbl> <chr> <dbl> <chr> <dbl> <dbl> <chr>        <dbl>    <dbl>    <dbl> <chr>      <dbl>   <dbl>   <dbl> <chr>        <dbl>    <dbl>
@@ -72,7 +72,23 @@ Ahora simplemente se trata de usar la función `meteoclimatic_download` como en 
 ``` r
 # Descarga de los datos de temperatura máxima de la Provincia de Barcelona
 ppcc_met <- meteoclimatic_download(id_prov = id_ppcc)
+ppcc_met
 
+# # A tibble: 523 x 26
+#    name  id      num mes     año hora    lat   lon Temp.unit Temp.act Temp.max Temp.min Hum.unit Hum.act Hum.max Hum.min
+#    <chr> <chr> <dbl> <chr> <dbl> <chr> <dbl> <dbl> <chr>        <dbl>    <dbl>    <dbl> <chr>      <dbl>   <dbl>   <dbl>
+#  1 Aigu~ ESCA~    20 Jul    2020 20:2~  41.8  2.25 C             21.5     31       15.3 %             85      91      37
+#  2 Alel~ ESCA~    20 Jul    2020 20:1~  41.5  2.29 C             24.2     29.3     21.9 %             82      84      55
+#  3 Alel~ ESCA~    20 Jul    2020 20:1~  41.5  2.29 C             22.4     28.1     21.6 %             87      88      57
+#  4 Aren~ ESCA~    20 Jul    2020 20:1~  41.6  2.56 C             23.9     29       20.9 %             85      85      65
+#  5 Aren~ ESCA~    20 Jul    2020 20:1~  41.6  2.55 C             24.7     27.6     21.2 %             85      86      63
+#  6 Aren~ ESCA~    20 Jul    2020 20:2~  41.6  2.54 C             23.8     28.2     20.7 %             74      74      48
+#  7 Arge~ ESCA~    20 Jul    2020 20:1~  41.6  2.39 C             23.9     29.9     20.9 %             84      87      56
+#  8 Bada~ ESCA~    20 Jul    2020 20:2~  41.5  2.24 C             25.2     29.6     22.4 %             77      80      66
+#  9 Bada~ ESCA~    20 Jul    2020 20:1~  41.4  2.22 C             25.6     30       22.1 %             77      85      48
+# 10 Bada~ ESCA~    20 Jul    2020 20:1~  41.4  2.22 C             26.2     29.9     22.7 %             71      79      47
+# # ... with 513 more rows, and 10 more variables: Pres.unit <chr>, Pres.act <dbl>, Pres.max <dbl>, Pres.min <dbl>,
+# #   Vient.unit <chr>, Vient.act <dbl>, Vient.dir <dbl>, Vient.max <dbl>, Precip.unit <chr>, Precip.total <dbl>```
 ```
 Y ahora visualizamos:
 
