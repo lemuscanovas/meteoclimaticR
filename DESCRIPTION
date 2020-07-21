@@ -1,11 +1,13 @@
 Package: meteoclimaticR
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Descarga de datos de Meteoclimatic 
+Version: 0.0.1
+Author: Marc Lemus-Canovas
+Maintainer: Marc Lemus-Canovas <mlemus@ub.edu>
+Description: meteoclimaticR permite la descarga de datos meteorológicos proporcionados por la red de Meteoclimatic. 
+Se pueden obtener los datos actuales de temperatura, humedad relativa, precipitación, viento y presión atmosférica.
+License: GPL (>= 3)
+URL: <https://lemuscanovas.github.io/meteoclimaticR >
+BugReports: https://github.com/lemuscanovas/meteoclimaticR/issues
 Encoding: UTF-8
 LazyData: true
