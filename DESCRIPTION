@@ -4,8 +4,7 @@ Title: Descarga de datos de Meteoclimatic
 Version: 0.0.1
 Author: Marc Lemus-Canovas
 Maintainer: Marc Lemus-Canovas <mlemus@ub.edu>
-Description: meteoclimaticR permite la descarga de datos 
-meteorologicos proporcionados por la red de Meteoclimatic. 
+Description: meteoclimaticR permite la descarga de datos meteorologicos proporcionados por la red de Meteoclimatic. 
 License: GPL (>= 3)
 URL: <https://lemuscanovas.github.io/meteoclimaticR>
 BugReports: https://github.com/lemuscanovas/meteoclimaticR/issues
