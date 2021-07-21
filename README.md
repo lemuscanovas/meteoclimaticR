@@ -4,7 +4,7 @@ meteoclimaticR <img src="img/logo.png" align="right" alt="" width="140" />
 
 ## Descripción
 
-**meteoclimaticR** permite la descarga de datos meteorológicos proporcionados por la red  Meteoclimatic. Se pueden obtener los datos actuales de temperatura, humedad relativa, precipitación, viento y presión atmosférica. Además también se pueden descargar los valores máximos y mínimos del mismo día. 
+**meteoclimaticR** permite la descarga de datos meteorológicos proporcionados por la red de estaciones  Meteoclimatic. Se pueden obtener los datos actuales de temperatura, humedad relativa, precipitación, viento y presión atmosférica. Además también se pueden descargar los valores máximos y mínimos del mismo día. 
 **Novedad de la última versión (21-07-2021)**: Descarga de los históricos diarios desde 2012 de forma masiva !!!
 
 ## ¿Cómo funciona?
@@ -20,7 +20,7 @@ remotes::install_github("lemuscanovas/meteoclimaticR")
 ### 1. Descarga de los últimos registros meteorológicos
 
 Para la descarga de los datos meterológicos más recientes existe la función `current_download`. Ésta tiene un funcionamento muy simple. Hay que especificar el `id` de la comunidad autónoma (CCAA), provincia o estación meteorológica que proporciona Meteoclimatic. Lógicamente, para los ids relativos a CCAA y provincias, se descargan todas las estaciones pertenecientes a la región solicitada.
-Así, por ejemplo, si el usuario tienen interés en descargar los datos de la CCAA Illes Baleares, debe especificar: `id = ESIBA`; Si desea los datos de las estaciones de la isla de Mallorca, entonces `id = ESIBA07`. Para la estación concreta del Port de Sòller: `id = ESIBA0700000107108A`. Si, por ejemplo se desean los datos de Catalunya, País Valencià e Illes Balears, se puede generar un simple vector: `id = c("ESCAT","ESPVA","ESIBA")`.
+Así, por ejemplo, si el usuario tienen interés en descargar los datos de la CCAA Illes Baleares, debe especificar: `id = ESIBA`; Si desea los datos de las estaciones de la isla de Mallorca, entonces `id = ESIBA07`. Para la estación concreta del Port de Sòller: `id = ESIBA0700000107108A`. Si, por ejemplo, se desean los datos de Catalunya, País Valencià e Illes Balears, se puede generar un simple vector: `id = c("ESCAT","ESPVA","ESIBA")`.
 También es posible exportar directamente la descarga en un fichero excel especificando `save_excel = T`
 
 Veámoslo en un ejemplo:
@@ -46,7 +46,7 @@ ppcc
 # #   Precip.unit <chr>, Precip.total <dbl>
 
 ```
-Los datos están georreferenciados, por lo que es posible realizar una cartografía rápida de estos datos. Por ejemplo, veamos el plot de temperatura màxima:
+Los datos están georreferenciados, por lo que es posible realizar una cartografía rápida de estos datos. A continuación un plot de la temperatura máxima:
 
 
 ```r 
@@ -68,11 +68,11 @@ ggplot()+
 
 ### 2. Descarga de datos históricos (desde 2012)
 
-La descarga de datos históricos se realiza con la función `historic_download`. Ésta tiene un funcionamiento muy similar a la anterior, pero con la diferencia que la descarga se debe realizar de forma masiva para toda la CCAA. Por lo tanto, no es posible realizar la descarga por provincia o por estación concreta. De todos modos, es fácil realizar un filtraje de las estaciones desadas después de la descarga. 
-A parte de los argumentos `id` y `save_excel`, en esta función es necesario especificar la fecha o el rango de fechas que se quiere descargar mediante el argumento `dates`. Por lo tanto hay dos opciones:
+La descarga de datos históricos se realiza mediante la función `historical_download`. Ésta tiene un funcionamiento muy similar a la anterior, pero con la diferencia que **la descarga se debe realizar de forma masiva para toda la CCAA. Por lo tanto, no es posible realizar la descarga por provincia o por estación concreta**. De todos modos, es fácil realizar un filtraje de las estaciones desadas después de la descarga. 
+A parte de los argumentos `id` y `save_excel`, en esta función es necesario especificar la fecha o el intervalo de fechas que se quiere descargar mediante el argumento `dates`. Por lo tanto hay dos opciones:
 - Una sola fecha: `dates = "2017-01-05"`
-- rango de fechas: `dates = c("2019-01-01","2020-05-30")`
-Si se opta por un rango de fechas, el usuario puede filtrar solamente aquellos meses de su interés, pro ejemplo los eneros del rango: `months = 1` (1 se refiere a Enero, 12 a Diciembre).
+- intervalo de fechas: `dates = c("2019-01-01","2020-05-30")`
+Si se opta por un intervalo de fechas, el usuario puede filtrar solamente aquellos meses de su interés, por ejemplo los eneros del intervalo: `months = 1` (1 se refiere a Enero, 12 a Diciembre).
 A continuación se muestra un ejemplo todo en uno para la CCAA Illes Balears:
 
 ```r 
@@ -99,9 +99,9 @@ bal_hist
 # ... with 6,124 more rows, and 2 more variables: Vient.max <dbl>, Precip.diaria <dbl>        
 ```
 
-Como se ve, la descarga tarda aproximadamente unos 5 minutos. Es recomendable guardar el fichero excel resultante `save_excel = T`, si se quiere descargar una serie más larga con todos los meses, ya que la descarga podría demorarse bastante tiempo.
+Como se observa, la descarga tarda aproximadamente unos 5 minutos. Es recomendable guardar el fichero excel resultante `save_excel = T` si se quiere descargar una serie más larga, ya que la descarga podría demorarse bastante tiempo.
 
-Mediante las funciones proporcionadas por la librería `dplyr`, es muy fácil filtrar la estación/es que se deseen. En este caso vamos a filtrar la estación de "Llucmajor" (ESIBA0700000107620A), en la isla de Mallorca. Mediante `lubridate` y `ggplot` uno puede representar la serie diaria de precipitación o tempratura para cada uno de los años descargados.
+Mediante las funciones proporcionadas por la librería `dplyr`, es muy fácil filtrar la estación/es que se deseen. En este caso vamos a filtrar la estación de "Llucmajor" (ESIBA0700000107620A), en la isla de Mallorca. Con `lubridate` y `ggplot`, uno puede representar la serie diaria de precipitación o tempratura máxima para cada uno de los años descargados.
 
 ```r 
 library(dplyr)
@@ -133,9 +133,9 @@ ggplot(llucmajor, aes(x = time, y = Temp.max))+
   theme(axis.title.x = element_blank())
   
 ```
-<img src="img/llucmajor_pcp.png" align="centre" alt="" width="500" />
+<img src="img/llucmajor_pcp.png" align="centre" alt="" width="800" />
 
-<img src="img/llucmajor_tmax.png" align="centre" alt="" width="500" />
+<img src="img/llucmajor_tmax.png" align="centre" alt="" width="800" />
 
 ### Apéndice: Los códigos de todas las provincias.
 
