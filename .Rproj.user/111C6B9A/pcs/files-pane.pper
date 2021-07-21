@@ -1,9 +1,9 @@
 {
-    "path" : "C:/Users/gc/Desktop/meteoclimaticR",
-    "sortOrder" : [
+    "path": "C:/Users/gc/Desktop/meteoclimaticR/R",
+    "sortOrder": [
         {
-            "ascending" : true,
-            "columnIndex" : 2
+            "columnIndex": 2,
+            "ascending": true
         }
     ]
 }

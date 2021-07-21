@@ -1,20 +1,31 @@
-#' Descarga de datos de Meteoclimatic
+#' @title Download the latest data from Meteoclimatic
 #'
-#' Esta función permite bajar todos los valores de temperatura, precipitación, humedad,
-#' viento y presión por provincia.
+#' @description This function allows you to download all georreferenced the values of temperature, precipitation, humidity,
+#' wind and pressure by CCAA, province, or station.
 #'
-#' @param id_prov Identificador de Provincia facilitado por Meteoclimatic. Ej. Barcelona: ESCAT080000000.
+#' \code{current_download} allows to download all the latest daily meteorological from the Meteoclimatic network.
 #'
-#' @return data.frame xy con todos los valores de las variables registradas por las estaciones de la província solicitada
+#' @param id character. Id of the CCAA, province or station, used by Meteoclimatic. Default: "ESCAT080000000". Province of Barcelona.
+#' @param save_excel logical. Do you want to save the downloaded data in an Excel file?
 #'
-#' @details Se pueden obtener datos actuales, máximos y mínimos por estación. Sin embargo, no se pueden descargar datos históricos.
+#' @return A list with: \itemize{
+#'    \item{A data.frame containing georreferenced daily meteorological values for all the stations located in the requested id
+#' }}
 #'
+#' @examples
+#' latest_data <- current_download(id = "ESCAT080000000",
+#' save_excel = F)
+#'
+#' @seealso  \code{\link{historical_download}}
+#'
+#' @export
 
-meteoclimatic_download <- function(id_prov = "ESCAT080000000") {
+
+current_download <- function(id = "ESCAT080000000", save_excel = T) {
 
   data_final <- list()
-  for (id in id_prov) {
-    xml.lonlat <- paste0("http://meteoclimatic.com/feed/rss/",id) # lon lat
+  for (ii in id) {
+    xml.lonlat <- paste0("http://meteoclimatic.com/feed/rss/",ii) # lon lat
     lonlat <- xmlParse(rawToChar(GET(xml.lonlat)$content))
     lonlat.l <- t(xmlToList(lonlat, simplify = TRUE))
 
@@ -42,7 +53,7 @@ meteoclimatic_download <- function(id_prov = "ESCAT080000000") {
              lon = ifelse(lon >4 & lat > 40.5,-lon,lon))
 
 
-    xml.data <- paste0("http://www.meteoclimatic.net/feed/xml/",id) # data
+    xml.data <- paste0("http://www.meteoclimatic.net/feed/xml/",ii) # data
     data <- xmlParse(rawToChar(GET(xml.data)$content))
     data.l <- t(xmlToList(data, simplify = TRUE))
 
@@ -50,7 +61,7 @@ meteoclimatic_download <- function(id_prov = "ESCAT080000000") {
     meteo<- tibble(met = meteo)
 
     meteo_id <-meteo %>%
-      unnest_wider(met) %>% select(id)
+      unnest_wider(met) %>% select(ii)
 
     meteo_temp <-meteo %>%
       unnest_wider(met) %>% select(stationdata) %>%
@@ -92,7 +103,10 @@ meteoclimatic_download <- function(id_prov = "ESCAT080000000") {
   }
 
   fin <- bind_rows(data_final)
-
+  if(isTRUE(save_excel)){
+    openxlsx::write.xlsx(serie, paste0(id,"_hist.xlsx"))
+    message("data stored in:",getwd())
   return(fin)
 
+  }
 }
