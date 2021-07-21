@@ -17,7 +17,7 @@ meteoclimaticR <img src="img/logo.png" align="right" alt="" width="140" />
 remotes::install_github("lemuscanovas/meteoclimaticR")
 ```
 
-### Descarga de los últimos registros meteorológicos:
+### 1. Descarga de los últimos registros meteorológicos
 
 Para la descarga de los datos meterológicos más recientes existe la función `current_download`. Ésta tiene un funcionamento muy simple. Hay que especificar el `id` de la comunidad autónoma (CCAA), provincia o estación meteorológica que proporciona Meteoclimatic. Lógicamente, para los ids relativos a CCAA y provincias, se descargan todas las estaciones pertenecientes a la región solicitada.
 Así, por ejemplo, si el usuario tienen interés en descargar los datos de la CCAA Illes Baleares, debe especificar: `id = ESIBA`; Si desea los datos de las estaciones de la isla de Mallorca, entonces `id = ESIBA07`. Para la estación concreta del Port de Sòller: `id = ESIBA0700000107108A`. Si, por ejemplo se desean los datos de Catalunya, País Valencià e Illes Balears, se puede generar un simple vector: `id = c("ESCAT","ESPVA","ESIBA")`.
@@ -27,57 +27,119 @@ Veámoslo en un ejemplo:
 
 ```r
 library(meteoclimaticR)
-ppcc <- current_download(id = c("ESCAT"),save = F)
+ppcc <- current_download(id = c("ESCAT","ESPVA","ESIBA"),save = F)
+ppcc
+
+# A tibble: 6 x 26
+#   name       id        num month    yr hour    lat   lon Temp.unit Temp.act
+#   <chr>      <chr>   <dbl> <chr> <dbl> <chr> <dbl> <dbl> <chr>        <dbl>
+# 1 Sant Mate~ ESIBA0~    21 Jul    2021 17:0~  39.0  1.38 C             30.8
+# 2 Sant Miqu~ ESIBA0~    21 Jul    2021 17:0~  39.0  1.42 C             30.1
+# 3 Santa Eul~ ESIBA0~    21 Jul    2021 17:0~  39.0  1.53 C             30.1
+# 4 Son Ferri~ ESIBA0~    21 Jul    2021 17:0~  39.6  2.71 C             30.7
+# 5 Vilafranc~ ESIBA0~    21 Jul    2021 17:0~  39.6  3.09 C             33.1
+# 6 Vilafranc~ ESIBA0~    21 Jul    2021 17:0~  39.6  3.08 C             32.7
+# # ... with 16 more variables: Temp.max <dbl>, Temp.min <dbl>,
+# #   Hum.unit <chr>, Hum.act <dbl>, Hum.max <dbl>, Hum.min <dbl>,
+# #   Pres.unit <chr>, Pres.act <dbl>, Pres.max <dbl>, Pres.min <dbl>,
+# #   Vient.unit <chr>, Vient.act <dbl>, Vient.dir <dbl>, Vient.max <dbl>,
+# #   Precip.unit <chr>, Precip.total <dbl>
 
 ```
+Los datos están georreferenciados, por lo que es posible realizar una cartografía rápida de estos datos. Por ejemplo, veamos el plot de temperatura màxima:
 
-A partir de estos datos y usando `ggplot2` es muy sencillo realizar un a visualización espacial de la variable de interés. Sin embargo, se ofrece la posibilidad de un mapeo automático con la función `plot_met`, la cual permite realizar la visualización de cualquiera de las varaibles mostradas en el objeto `bcn_met`. En esta ocasión vamos a plotear la temperatura máxima.
-```{r pressure, echo=T}
-plot_met(bcn_met, title = "Temperatura máxima 20/07/2020", caption = "Meteoclimatic")
+
+```r 
+library(sf)
+library(ggplot2)
+library(rnaturalearth)
+library(pals)
+spa <- ne_countries(country = "spain", scale = 10, returnclass = "sf")
+
+ggplot()+
+  geom_sf(data = spa)+
+  geom_point(data = ppcc, aes(lon,lat, fill = Temp.max),
+                              shape = 21, colour = "black")+
+  scale_fill_gradientn(colours = rev(brewer.spectral(100)))+
+  xlim(-1,5)+ylim(38,43)+
+  theme_bw()
 ```
-<img src="img/bcn_tx.png" align="centre" alt="" width="500" />
-Dentro de plot_met se puede cambiar de paleta, tamaño de los puntos, etc... 
+<img src="img/ppcc_tx.png" align="centre" alt="" width="500" />
 
-### Ejemplo 2: un conjunto de provincias
+### 2. Descarga de datos históricos (desde 2012)
 
-Para descargar varias provincias a la vez, simplemente hay que crear un vector con todos los identificadores deseados:
-``` r
-id_ppcc <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # cat
-             "ESPVA12000000","ESPVA46000000","ESPVA030000000", #val
-             "ESIBA0700000") #bal
+La descarga de datos históricos se realiza con la función `historic_download`. Ésta tiene un funcionamiento muy similar a la anterior, pero con la diferencia que la descarga se debe realizar de forma masiva para toda la CCAA. Por lo tanto, no es posible realizar la descarga por provincia o por estación concreta. De todos modos, es fácil realizar un filtraje de las estaciones desadas después de la descarga. 
+A parte de los argumentos `id` y `save_excel`, en esta función es necesario especificar la fecha o el rango de fechas que se quiere descargar mediante el argumento `dates`. Por lo tanto hay dos opciones:
+- Una sola fecha: `dates = "2017-01-05"`
+- rango de fechas: `dates = c("2019-01-01","2020-05-30")`
+Si se opta por un rango de fechas, el usuario puede filtrar solamente aquellos meses de su interés, pro ejemplo los eneros del rango: `months = 1` (1 se refiere a Enero, 12 a Diciembre).
+A continuación se muestra un ejemplo todo en uno para la CCAA Illes Balears:
+
+```r 
+bal_hist <- historical_download(id = "ESIBA",
+                                dates = c("2019-01-01","2021-05-30"),
+                                months = c(1:3),# solamente de enero hasta marzo 
+                                save_excel = F) # recomendable T
+                                
+bal_hist
+
+# A tibble: 6,134 x 14
+#    name   id    time         lon   lat   alt Temp.max Temp.min Hum.max Hum.min Pres.max Pres.min
+#    <chr>  <chr> <date>     <dbl> <dbl> <dbl>    <dbl>    <dbl>   <dbl>   <dbl>    <dbl>    <dbl>
+#  1 Cala ~ ESIB~ 2019-01-01  1.28  39.0    12     17.7      5.7      94      64     1030     1028
+#  2 Eivis~ ESIB~ 2019-01-01  1.32  38.9    27     17        8.3      92      61     1030     1028
+#  3 Cala ~ ESIB~ 2019-01-01  3.89  40.0    65     15.5     10.9      94      76     1031     1028
+#  4 Campa~ ESIB~ 2019-01-01  2.97  39.8   129     22.2     10.1      86      29     1031     1028
+#  5 Ciuta~ ESIB~ 2019-01-01  3.83  40.0    16     15.6      9        91      73     1030     1027
+#  6 Eivis~ ESIB~ 2019-01-01  1.41  38.9    27     17        8.3      92      61     1030     1028
+#  7 Estel~ ESIB~ 2019-01-01  2.48  39.6   145     16.1      8.1      86      53     1032     1029
+#  8 Inca ~ ESIB~ 2019-01-01  2.9   39.7   124     18.4      7.3      88      38     1030     1027
+#  9 Inca ~ ESIB~ 2019-01-01  2.9   39.7   120     15.7      4.7      52      37     1027     1026
+# 10 Llore~ ESIB~ 2019-01-01  2.97  39.6   166     18.7      6.1      83      40     1031     1027
+# ... with 6,124 more rows, and 2 more variables: Vient.max <dbl>, Precip.diaria <dbl>        
 ```
-Ahora simplemente se trata de usar la función `meteoclimatic_download` como en el ejemplo anterior. Note que la descarga puede demorar medio minuto.
 
-``` r
-# Descarga de los datos de temperatura máxima de la Provincia de Barcelona
-ppcc_met <- meteoclimatic_download(id_prov = id_ppcc)
-ppcc_met
+Como se ve, la descarga tarda aproximadamente unos 5 minutos. Es recomendable guardar el fichero excel resultante `save_excel = T`, si se quiere descargar una serie más larga con todos los meses, ya que la descarga podría demorarse bastante tiempo.
 
-# # A tibble: 523 x 26
-#    name  id      num mes     año hora    lat   lon Temp.unit Temp.act Temp.max Temp.min Hum.unit Hum.act Hum.max Hum.min
-#    <chr> <chr> <dbl> <chr> <dbl> <chr> <dbl> <dbl> <chr>        <dbl>    <dbl>    <dbl> <chr>      <dbl>   <dbl>   <dbl>
-#  1 Aigu~ ESCA~    20 Jul    2020 20:2~  41.8  2.25 C             21.5     31       15.3 %             85      91      37
-#  2 Alel~ ESCA~    20 Jul    2020 20:1~  41.5  2.29 C             24.2     29.3     21.9 %             82      84      55
-#  3 Alel~ ESCA~    20 Jul    2020 20:1~  41.5  2.29 C             22.4     28.1     21.6 %             87      88      57
-#  4 Aren~ ESCA~    20 Jul    2020 20:1~  41.6  2.56 C             23.9     29       20.9 %             85      85      65
-#  5 Aren~ ESCA~    20 Jul    2020 20:1~  41.6  2.55 C             24.7     27.6     21.2 %             85      86      63
-#  6 Aren~ ESCA~    20 Jul    2020 20:2~  41.6  2.54 C             23.8     28.2     20.7 %             74      74      48
-#  7 Arge~ ESCA~    20 Jul    2020 20:1~  41.6  2.39 C             23.9     29.9     20.9 %             84      87      56
-#  8 Bada~ ESCA~    20 Jul    2020 20:2~  41.5  2.24 C             25.2     29.6     22.4 %             77      80      66
-#  9 Bada~ ESCA~    20 Jul    2020 20:1~  41.4  2.22 C             25.6     30       22.1 %             77      85      48
-# 10 Bada~ ESCA~    20 Jul    2020 20:1~  41.4  2.22 C             26.2     29.9     22.7 %             71      79      47
-# # ... with 513 more rows, and 10 more variables: Pres.unit <chr>, Pres.act <dbl>, Pres.max <dbl>, Pres.min <dbl>,
-# #   Vient.unit <chr>, Vient.act <dbl>, Vient.dir <dbl>, Vient.max <dbl>, Precip.unit <chr>, Precip.total <dbl>```
+Mediante las funciones proporcionadas por la librería `dplyr`, es muy fácil filtrar la estación/es que se deseen. En este caso vamos a filtrar la estación de "Llucmajor" (ESIBA0700000107620A), en la isla de Mallorca. Mediante `lubridate` y `ggplot` uno puede representar la serie diaria de precipitación o tempratura para cada uno de los años descargados.
+
+```r 
+library(dplyr)
+library(lubridate)
+
+# Filtraje de la estación en cuestión:
+llucmajor <- bal_hist %>% filter(id == "ESIBA0700000107620A")
+
+# Visualización de la precipitación diaria.
+ggplot(llucmajor, aes(x = time, y = Precip.diaria))+
+  geom_col(color = "blue")+
+  facet_wrap(~year(time), scales = "free")+
+  ylab("mm/dia")+
+  labs(title = "Precipitación diaria en Llucmajor",
+       subtitle = "Enero-Marzo, 2019-2021",
+       caption = "Producido con MeteoclimaticR. Fuente: Meteoclimatic")+
+  theme_bw()+
+  theme(axis.title.x = element_blank())
+  
+# Visualización de la tempreratura máxima diaria.
+ggplot(llucmajor, aes(x = time, y = Temp.max))+
+  geom_line(color = "darkred")+
+  facet_wrap(~year(time), scales = "free")+
+  ylab("ºC")+
+  labs(title = "Temperatura máxima diaria en Llucmajor",
+       subtitle = "Enero-Marzo, 2019-2021",
+       caption = "Producido con MeteoclimaticR. Fuente: Meteoclimatic")+
+  theme_bw()+
+  theme(axis.title.x = element_blank())
+  
 ```
-Y ahora visualizamos:
+<img src="img/llucmajor_pcp.png" align="centre" alt="" width="500" />
 
-``` r
-plot_met(ppcc_met,var =  "Hum.min", title = "Humedad Relativa mínima 20-07-2020",
-         caption = "Meteoclimatic",units = "HR (%)",pal = rev(pals::jet(100)))
-```
-<img src="img/ppcc_hr.png" align="centre" alt="" width="500" />
+<img src="img/llucmajor_tmax.png" align="centre" alt="" width="500" />
 
-A continuación se muestra el vector para todas la regiones de la Península:
+### Apéndice: Los códigos de todas las provincias.
+
+Finalmente, se muestra el vector para todas las provincias de la Península:
 ``` r
 id_prov <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # cat
              "ESPVA12000000","ESPVA46000000","ESPVA030000000", #val

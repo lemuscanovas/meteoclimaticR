@@ -1,0 +1,165 @@
+library(meteoclimaticR)
+if(!require("raster")) install.packages("raster")
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("httr")) install.packages("httr")
+if(!require("XML")) install.packages("XML")
+if(!require("sf")) install.packages("sf")
+if(!require("pals")) install.packages("pals")
+if(!require("ggnewscale")) install.packages("ggnewscale")
+library(metR)
+library(showtext)
+library(extrafont)
+loadfonts(device = "postscript")
+library(ggnewscale)
+library(lubridate)
+
+comarques <- read_sf("C:/Users/gc/Desktop/DOCTORAT/DOCENCIA/SERIES_CLIMATICAS/R/data/p5/comarques.shp") %>%
+  st_transform(crs = 4326)
+
+id_ppcc <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # cat
+             "ESPVA12000000","ESPVA46000000","ESPVA030000000", #val
+             "ESMUR30000000", # mur
+             "ESAND040000000","ESAND18000000","ESAND23000000","ESAND14000000","ESAND29000000",
+             "ESAND41000000","ESAND1100000011600A","ESAND21000000", # and
+             "PTSUR080000000","PTSUR120000000","PTCEN110000000",
+             "PTCEN200000000","PTCEN100000000","PTNOR040000000","PTNOR180000000", # pt
+             "ESEXT060000000","ESEXT10000000", #ext
+             "ESCLM45000000","ESCLM13000000","ESCLM16000000","ESCLM020000000",
+             "ESCLM19000000", #cylam
+             "ESMAD28000000", #mad
+             "ESCYL0500000005","ESCYL40000000","ESCYL42000000","ESCYL42000000",
+             "ESCYL34000000","ESCYL24000000","ESCYL49000000","ESCYL47000000",
+             "ESCYL37000000","ESCYL49000000", #cyleo
+             "ESGAL320000000","ESGAL36000000","ESGAL15000000","ESGAL27000000", # gal
+             "ESAST33000000", #astu
+             "ESCTB39000000" ,#cant
+             "ESEUS48000000","ESEUS20000000","ESEUS010000000", #eusk
+             "ESNAF31000000", #nav,
+             "ESLRI26000000", #rioj
+             "ESARA22000000","ESARA50000000","ESARA44000000", #arag
+             "ESIBA0700000","ESAND52000000")#"ESICA3800000")
+
+ppcc_met <- meteoclimatic_download(id_prov = id_ppcc) %>%
+  mutate(calor_extrema_40 = ifelse(Temp.max >= 40,1,0),
+         new_record = if_else(Temp.max >= 40, "Temperatures màximes > 40ºC", ""),
+         desc = "Els cercles negres mostren estacions amb superació d'aquest llindar.") %>%
+  filter(Temp.max <48)
+saveRDS(ppcc_met,"flash_heat_20210712_meteoclimatic_.rds")
+
+
+
+borders <- rnaturalearth::ne_countries(country = c("spain","france","portugal","italy",
+                                                   "morocco","algeria","tunisia","andorra"),
+                                       returnclass = "sf",scale = 10)
+
+elev <- elevatr::get_elev_raster(locations = borders, z = 4) %>% crop(extent(borders)) %>%
+  mask(borders)%>%
+  as.data.frame(xy = T) %>%
+  setNames(c("lon","lat","z"))
+
+ggplot()+
+  geom_contour_fill(data = elev, aes(lon,lat,z = z),alpha = 0.7, binwidth = 200,show.legend = F)+ 
+  scale_fill_gradientn(colors = pals::brewer.greys(100))+
+  geom_sf(data = borders, fill = "transparent")+
+  geom_point(data = ppcc_met, aes(lon,lat, colour = Temp.max), size = 2, alpha = 0.8)+
+  # geom_point(data = filter(ppcc_met, calor_extrema_40 == 1), aes(lon,lat), 
+  #            shape = 21, fill = "black",
+  #            stroke = 0.2, alpha = 0.8, size = 0.8) +
+  geom_point(data = filter(ppcc_met, calor_extrema_40 == 1), aes(lon,lat), 
+             shape = 21, fill = NA, color = "black",
+             alpha = 1, size = 2) +
+  
+  new_scale_fill() +
+  ggforce::geom_mark_ellipse(data = ppcc_met,
+                             aes(lon,lat,fill = new_record, label = new_record, filter = new_record != "",
+                                 description = desc),
+                             alpha = 0, color = "grey20",
+                             expand = unit(3, "mm"), con.cap = 0,
+                             show.legend = FALSE, label.buffer = unit(30, 'mm'),label.minwidth = 70,
+    label.fontsize = c(12, 9), label.family = "Chivo") +
+  scale_color_stepsn(colours = rev(pals::brewer.spectral(100)),limits = c(17,45),breaks = seq(0,50,2),
+                     name = "ºC")+
+  # scale_color_stepsn(colours = rev(pals::brewer.spectral(100)),limits = c(-1,31),breaks = seq(-4,50,2),
+  #                    name = "ºC")+
+  guides(color = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = "right",
+                                 title.vjust = .1)) +
+  scale_x_continuous(limits = c(-10,8), expand = c(0,0))+
+  scale_y_continuous(limits = c(35,45),expand = c(0,0))+
+  labs(title = paste0("Temperatures màximes"),
+       subtitle = as_date(Sys.time()+hours(1)),caption = "@lemuscanovas | Meteoclimatic")+
+  theme_void()+
+  theme(legend.position = "bottom",
+        legend.justification = 0.5,
+        plot.caption = element_text(family = "Frutiger LT Condensed", 
+                                    margin = margin(b = 5, t = 10, unit = "pt")),                
+        plot.title = element_text(family = "Frutiger LT Condensed",hjust = 0.5, 
+                                  size = 16, face = "bold", 
+                                  margin = margin(b = 2, t = 5, unit = "pt")),
+        legend.text = element_text(family = "Frutiger LT Condensed"),
+        plot.subtitle = element_text(family = "Frutiger LT Condensed", hjust = 0.5,
+                                     size = 13, 
+                                     margin = margin(b = 10, t = 5, unit = "pt")))
+ggsave("tmax_12072021.png",width = 8.28, height = 7.33, type = "cairo")  
+
+
+
+# REGRESSION TEMPERATURE --------------------------------------------------
+library(gstat)
+library(rgdal)
+
+ppcc_met <- meteoclimatic_download(id_prov = id_ppcc) %>%
+  mutate(calor_extrema_40 = ifelse(Temp.max >= 40,1,0),
+         new_record = if_else(Temp.max >= 40, "On se superen els 40ºC?", ""),
+         desc = "Els punts negres denoten aquests valors extrems!") %>%
+  filter(Temp.max <48) %>% st_as_sf(coords = c("lon","lat"),crs = 4326)
+
+ibe <- rnaturalearth::ne_countries(country = c("spain","portugal","andorra"),returnclass = "sf")
+elev <- elevatr::get_elev_raster(locations = ibe, z = 5) %>% crop(extent(ibe)) %>%
+  mask(ibe) %>% aggregate(3)
+
+lon <- init(elev, 'x') %>% crop(extent(ibe)) %>%
+  mask(ibe)
+lat <- init(elev, 'y')%>% crop(extent(ibe)) %>%
+  mask(ibe)
+
+vindeps_raster <- stack(elev,lon,lat)
+
+vindep_sp <- as(vindeps_raster, "SpatialGridDataFrame") # necesario para usar gstat
+names(vindep_sp) <- c("elev","lon","lat")
+ppcc_met <- as_Spatial(ppcc_met)
+datos <- cbind(as.data.frame(ppcc_met), over(ppcc_met, vindep_sp))
+datos<- na.omit(datos)
+names(datos)[(ncol(datos)-2):ncol(datos)] <- c("elev","lon","lat")
+str(datos)
+
+coordinates(datos)<- c("coords.x1", "coords.x2")
+crs(datos)<- crs(vindep_sp)
+
+library(automap)
+fit_var <- autofitVariogram(formula = Temp.max~elev+lon+lat, 
+                 input_data = datos , 
+                 model = c("Sph", "Exp", "Gau", "Ste"),
+                 kappa = c(0.05, seq(0.2, 2, 0.1), 5, 10), 
+                 fix.values = c(NA,NA,NA),
+                 verbose = FALSE, 
+                 GLS.model = NA,
+                 start_vals = c(NA,NA,NA),
+                 miscFitOptions = list())
+
+lm_ibe <- krige(
+  formula=Temp.max~1,
+  locations= datos,
+  model = fit_var$var_model,
+  newdata=vindep_sp) %>% stack()
+
+borders <- rnaturalearth::ne_countries(country = c("spain","france","portugal","italy",
+                                                   "morocco","algeria","tunisia","andorra"),
+                                       returnclass = "sf",scale = 10)
+
+elev <- elevatr::get_elev_raster(locations = borders, z = 4) %>% crop(extent(borders)) %>%
+  mask(borders)%>%
+  as.data.frame(xy = T) %>%
+  setNames(c("lon","lat","z"))
+
