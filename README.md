@@ -27,7 +27,7 @@ Veámoslo en un ejemplo:
 
 ```r
 library(meteoclimaticR)
-ppcc <- current_download(id = c("ESCAT","ESPVA","ESIBA"),save = F)
+ppcc <- current_download(id = c("ESCAT","ESPVA","ESIBA"),save_excel = F)
 ppcc
 
 # A tibble: 6 x 26
