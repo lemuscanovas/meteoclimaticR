@@ -109,6 +109,10 @@ historical_download <- function(id = "ESIBA", dates = c("2021-05-16","2021-07-15
     lonlat.l <- t(xmlToList(lonlat, simplify = TRUE))
 
     coords <- lonlat.l[11:length(lonlat.l)-1]
+    coords <- lapply(coords, function(x) { xpre <- x
+    xpre$title <- iconv(x$title, from = "UTF-8", to = "ISO-8859-15")
+    x <- xpre
+    })
     coords<- tibble(coord = coords)
 
     coords <-coords %>%
