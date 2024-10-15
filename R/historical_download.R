@@ -104,7 +104,7 @@ historical_download <- function(id = "ESIBA", dates = c("2021-05-16","2021-07-15
 
     tab_data <- bind_rows(tab_data)
     ## COORDENADES BASE ACTUAL
-    xml.lonlat <- paste0("http://meteoclimatic.com/feed/rss/",id) # lon lat
+    xml.lonlat <- paste0("http://meteoclimatic.net/feed/rss/",id) # lon lat
     lonlat <- xmlParse(rawToChar(GET(xml.lonlat)$content))
     lonlat.l <- t(xmlToList(lonlat, simplify = TRUE))
 
