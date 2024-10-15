@@ -21,7 +21,7 @@ current_download <- function(id = "ESCAT080000000", save_excel = TRUE) {
 
   data_final <- list()
   for (ii in id) {
-    xml.lonlat <- paste0("http://meteoclimatic.com/feed/rss/",ii) # lon lat
+    xml.lonlat <- paste0("http://meteoclimatic.net/feed/rss/",ii) # lon lat
     lonlat <- xmlParse(rawToChar(GET(xml.lonlat)$content))
     lonlat.l <- t(xmlToList(lonlat, simplify = TRUE))
 
