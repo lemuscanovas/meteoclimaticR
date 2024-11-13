@@ -164,4 +164,4 @@ id_prov <- c("ESCAT08000000","ESCAT25000000","ESCAT17000000","ESCAT43000000", # 
              "ESARA22000000","ESARA50000000","ESARA44000000", #arag
              "ESIBA0700000","ESAND52000000")#"ESICA3800000") # bal, melilla y canarias
 ```
-Para cualquier cuestión no dudes en contactarme: mlemus@ub.edu
+Para cualquier cuestión no dudes en contactarme: marc.lemusicanovas@eurac.edu
