@@ -104,15 +104,11 @@ historical_download <- function(id = "ESIBA", dates = c("2021-05-16","2021-07-15
 
     tab_data <- bind_rows(tab_data)
     ## COORDENADES BASE ACTUAL
-    xml.lonlat <- paste0("http://meteoclimatic.com/feed/rss/",id) # lon lat
+    xml.lonlat <- paste0("http://meteoclimatic.net/feed/rss/",id) # lon lat
     lonlat <- xmlParse(rawToChar(GET(xml.lonlat)$content))
     lonlat.l <- t(xmlToList(lonlat, simplify = TRUE))
 
     coords <- lonlat.l[11:length(lonlat.l)-1]
-    coords <- lapply(coords, function(x) { xpre <- x
-    xpre$title <- iconv(x$title, from = "UTF-8", to = "ISO-8859-15")
-    x <- xpre
-    })
     coords<- tibble(coord = coords)
 
     coords <-coords %>%
